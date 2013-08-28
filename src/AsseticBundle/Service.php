@@ -395,8 +395,12 @@ class Service
      * @param AssetCollection $asset
      * @return string
      */
-    public function moveRaw(AssetCollection $asset)
+    public function moveRaw(AssetCollection $asset, $output=null)
     {
+    	if (!empty($output) && substr($output, -1) !== '/'){
+    		$output = $output.'/';
+    	}
+    	
         foreach ($asset as $value) {
             /** @var $value AssetInterface */
             $value->setTargetPath($value->getSourcePath());
@@ -425,7 +429,7 @@ class Service
         // Allow to move all files 1:1 to new directory
         // its particularly useful when this assets are i.e. images.
         if ($moveRaw) {
-            $this->moveRaw($asset);
+            $this->moveRaw($asset, ($options['output']===$name)?null:$options['output']);
         } else {
             $asset = $this->cacheAsset($asset);
             $this->assetManager->set($name, $asset);
